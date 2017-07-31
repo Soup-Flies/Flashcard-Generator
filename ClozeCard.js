@@ -1,8 +1,8 @@
 class ClozeCard {
-  constructor(text, cloze) {
+  constructor(text, ans) {
     this.fullText = text;
-    this.cloze = cloze;
-    this.partial = this.fullText.replace(this.cloze, " ... ");
+    this.ans = ans;
+    this.text = this.fullText.replace(this.ans, " ... ");
   }
 }
 module.exports = ClozeCard;

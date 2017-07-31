@@ -22,7 +22,7 @@ function prompt() {
         }
       ]).then(ans => newCard(ans.type));
     } else if (ans.action === "View") {
-      viewCards();
+      loadCards();
     } else {
       console.log("Bye Bye");
       setTimeout(() => process.exit(), 250);
@@ -31,7 +31,6 @@ function prompt() {
 };
 
 function newCard(cardType) {
-  let currentCard;
   inquirer.prompt([
     {
       name: "text",
@@ -44,7 +43,50 @@ function newCard(cardType) {
       type: "input"
     }
   ]).then(ans => {
+    let currentCard;
+    if (cardType === "Cloze" && !ans.text.includes(ans.answer)) {
+      console.log(`\nPlease be sure to check that the Cloze removal is exact in the full text\n`);
+      return newCard("Cloze");
+    }
     (cardType === "Cloze" ? currentCard = new ClozeCard(ans.text, ans.answer) : currentCard = new BasicCard(ans.text, ans.answer))
-    console.log(currentCard);
+    fs.appendFile('./flashcards.txt', `--${JSON.stringify(currentCard)}`, (err) => {
+      if (err) throw err
+      console.log(`Your card:
+        ${JSON.stringify(currentCard)} has been saved`);
+    });
+    setTimeout(() => prompt(), 20);
   });
 };
+
+function loadCards() {
+  fs.readFile('./flashcards.txt', 'utf8', (err,data) => {
+    data = data.split('--');
+    displayCards(0, data);
+  })
+}
+
+function displayCards(count, data) {
+  var parseData = JSON.parse(data[count]);
+  inquirer.prompt([
+    {
+      name: "userGuess",
+      message: () => parseData.text,
+      type: "input"
+    }
+  ]).then(ans => {
+    if (ans.userGuess.toLowerCase() === parseData.ans.toLowerCase()) {
+      console.log("Correct!");
+    } else {
+      console.log(`Wrong, the answer was ${parseData.ans}`);
+    }
+  }).then(() => {
+    if (count === data.length - 1) {
+      console.log();
+      setTimeout(() => prompt(), 20);
+    } else {
+      displayCards(count + 1, data);
+    };
+  });
+}
+
+prompt();

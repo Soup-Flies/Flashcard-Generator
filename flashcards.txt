@@ -1,0 +1,2 @@
+{"ans":"A Treellion","text":"How many trees is too many?"}
+--{"fullText":"Thai Curry is Ben's favorite food","ans":"Thai Curry","text":" ...  is Ben's favorite food"}--{"fullText":"Distance is a function of speed and time","ans":"speed","text":"Distance is a function of  ...  and time"}

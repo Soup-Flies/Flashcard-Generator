@@ -1,7 +1,7 @@
 class BasicCard {
-  constructor(front, back) {
-    this.front = front;
-    this.back = back;
+  constructor(back, front) {
+    this.ans = front;
+    this.text = back;
   }
 }
 module.exports = BasicCard;
